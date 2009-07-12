@@ -336,6 +336,9 @@ class VcView(melddoc.MeldDoc, gnomeglade.Component):
         self.on_quit_event()
         return gtk.RESPONSE_OK
 
+    def on_find_activate(self, *args):
+        self.treeview.emit('start-interactive-search')
+
     def on_row_activated(self, treeview, path, tvc):
         it = self.model.get_iter(path)
         if self.model.iter_has_child(it):

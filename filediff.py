@@ -427,6 +427,11 @@ class FileDiff(melddoc.MeldDoc, gnomeglade.Component):
         self.keymask = 0
         self.queue_draw()
 
+    def on_find_previous_activate(self, *args):
+        self.findbar.start_find_previous( self.textview_focussed )
+        self.keymask = 0
+        self.queue_draw()
+
     def on_filediff__key_press_event(self, entry, event):
         if event.keyval == gtk.keysyms.Escape:
             self.findbar.hide()

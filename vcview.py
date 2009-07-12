@@ -183,6 +183,8 @@ class VcView(melddoc.MeldDoc, gnomeglade.Component):
         addCol(_("Tag"), COL_TAG)
         addCol(_("Options"), COL_OPTIONS)
 
+        self.treeview.set_search_equal_func(resultSearchCb)
+
         class ConsoleStream(object):
             def __init__(self, textview):
                 self.textview = textview
@@ -624,3 +626,25 @@ class VcView(melddoc.MeldDoc, gnomeglade.Component):
 
     def on_reload_activate(self, *extra):
         self.on_fileentry_activate(self.fileentry)
+
+
+def resultSearchCb (model, column, key, it):
+    """Callback function for searching in VcView treeview"""
+    filePath = model.get_value(it, tree.COL_PATH)
+
+    # if query text contains slash, search in full path
+    if key.find('/') >= 0:
+        lineText = filePath
+    else:
+        lineText = os.path.basename(filePath)
+
+    # if query text contains only lower-case characters, do case-insensitive matching:
+    if key.islower():
+        lineText = lineText.lower()
+
+    if lineText.find(key) >= 0:
+        # line matches
+        return False
+    else:
+        return True
+

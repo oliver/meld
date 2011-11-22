@@ -28,6 +28,10 @@ import time
 from meld import misc
 import _vc
 
+
+# cached set of CVS working directories which have been validated
+valid_cvs_dirs = {}
+
 class Vc(_vc.Vc):
     CMD = "cvs"
     # CVSNT is a drop-in replacement for CVS; if found, it is used instead
@@ -57,9 +61,13 @@ class Vc(_vc.Vc):
     def revert_command(self):
         return [self.CMD,"update","-C"]
     def valid_repo(self):
+        if valid_cvs_dirs.has_key(self.location):
+            return True
+
         if _vc.call([self.CMD, "version"], cwd=self.root):
             return False
         else:
+            valid_cvs_dirs[self.location] = True
             return True
 
     def _get_dirsandfiles(self, directory, dirs, files):
